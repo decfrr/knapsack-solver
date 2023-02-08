@@ -83,7 +83,6 @@ class SFLA(Knapsack.Knapsack, ABC):
             "alpha": alpha,
             "rho": rho,
         }
-        np.random.seed(self.seed)
 
     @staticmethod
     def _check_params(self):
