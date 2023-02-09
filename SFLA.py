@@ -14,6 +14,7 @@ class SFLA(Knapsack.Knapsack, ABC):
     def init_param(self, population_size: int,
                    max_iterations: int,
                    memeplex_size: int,
+                   local_iteration: int = 10,
                    mutation: float = 0.05,
                    method: int = 1,
                    alpha: float = 0.5,
@@ -26,9 +27,11 @@ class SFLA(Knapsack.Knapsack, ABC):
         :param population_size: int
             Number of frogs in the population
         :param max_iterations: int
-            Maximum number of iterations for local search
+            Maximum number of iterations for global search
         :param memeplex_size: int
             Number of memeplexes
+        :param local_iteration: int (default:10)
+            number of iterations for local search
         :param mutation: float (default: 0.05)
             Probability of mutation
         :param method: int (default: 1)
@@ -73,16 +76,16 @@ class SFLA(Knapsack.Knapsack, ABC):
         """
         if not (method == 1 or method == 2 or method == 3):
             raise ValueError("Method must be 1, 2 or 3")
-        rho = np.max(self.item_values / self.item_weights)
         self.params = {
             "population_size": population_size,
             "max_iterations": max_iterations,
             "memeplex_size": memeplex_size,
+            "local_iteration":local_iteration,
             "mutation": mutation,
             "method": method,
             "alpha": alpha,
-            "rho": rho,
         }
+        np.random.seed(self.seed)
 
     @staticmethod
     def _check_params(self):
@@ -93,7 +96,7 @@ class SFLA(Knapsack.Knapsack, ABC):
         ----------
         :return: None
         """
-        params_list = ["population_size", "memeplex_size", "max_iterations", "rho", "alpha", "method"]
+        params_list = ["population_size", "memeplex_size", "max_iterations", "alpha", "method"]
         for param in params_list:
             if param not in self.params:
                 raise ValueError("Parameter {} is required".format(param))
@@ -173,7 +176,7 @@ class SFLA(Knapsack.Knapsack, ABC):
 
     @staticmethod
     def _local_search(self, memeplex) -> np.array:
-        for iteration in range(self.params["max_iterations"]):
+        for iteration in range(self.params["local_iteration"]):
             index_xb, index_xw = -1, -1
             fitness_xb, fitness_xw = -np.inf, np.inf
             for i in range(len(memeplex)):
@@ -271,7 +274,7 @@ class SFLA(Knapsack.Knapsack, ABC):
         delta = int(self.params["max_iterations"] / 20)
         best_time = 0
         best_fitness = -np.inf
-        while True:
+        for i in range(self.params["max_iterations"]):
             # calculate fitness for each solution
             population_fitness, population = map(np.array,
                                                  zip(*[self._calc_fitness(self, solution) for solution in population]))
@@ -312,4 +315,4 @@ class SFLA(Knapsack.Knapsack, ABC):
                 best_time += 1
             if best_time >= delta:
                 break
-        return self.solution, fitness
+        return self.solution, best_fitness
