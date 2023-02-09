@@ -12,7 +12,7 @@ The solvers are implemented in Python 3.9, and the following packages are requir
 
 ```shell
 # clone the repository
-$ git clone 
+$ git clone https://github.com/decfrr/knapsack-solver.git
 $ cd knapsack-solver
 # install the required packages
 $ pip install -r requirements.txt
