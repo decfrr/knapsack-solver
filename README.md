@@ -62,7 +62,7 @@ evoa.init_param(pop_size, max_iter, iter_replace, replace_rate)
 pop_size = 500
 # maximum number of iterations: int
 max_iter = 50
-# number of memeplexes: int ( max_iter % memeplexes == 0 )
+# number of memeplexes: int ( pop_size % memeplexes == 0 )
 memeplexes = 10
 # method of update the worst solution: int (1 or 2 or 3, default: 1)
 method = 1
